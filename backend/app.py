@@ -26,6 +26,7 @@ CORS(
         FRONTEND_URL,              # e.g. https://my-chatbot.vercel.app
         "http://localhost:3000",   # local React dev
         "http://localhost:5173",
+        "https://cheeku-chatbot-padmasini-1.onrender.com",
     
            # local Vite dev
     ]}},
