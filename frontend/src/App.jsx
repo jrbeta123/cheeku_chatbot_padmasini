@@ -6,8 +6,8 @@ import {
     Navigate
 } from "react-router-dom";
 
-import Login from "./Login";
-import Chatbot from "./Chatbot";
+import Login from "./components/Login";
+import Chatbot from "./components/Chatbot";
 
 function App() {
     return (
