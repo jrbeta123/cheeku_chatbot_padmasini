@@ -7,7 +7,6 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/index.html" element={<Navigate to="/" replace />} />
             <Route path="/home" element={<Chatbot />} />
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -1,10 +1,13 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const API = import.meta.env.VITE_API_URL;
 
 function Login() {
+    const navigate = useNavigate();
+
     const [page, setPage] = useState(
         new URLSearchParams(window.location.search).has("token")
             ? "reset"
@@ -17,6 +20,7 @@ function Login() {
     const [newPassword, setNewPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // COMMON API FUNCTION
     const callAPI = async (endpoint, data) => {
@@ -47,6 +51,7 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         setMessage("");
+        setLoading(true);
 
         try {
             const result = await callAPI("login", {
@@ -54,13 +59,20 @@ function Login() {
                 password: password
             });
 
-            localStorage.setItem("token", result.token);
-            localStorage.setItem("login_id", result.login_id);
+            if (!result.token) {
+                throw new Error("Login succeeded but no token was received from backend.");
+            }
 
-            window.location.href = "/home";
+            localStorage.setItem("token", result.token);
+            localStorage.setItem("login_id", result.login_id || loginId);
+
+            // Navigate to chatbot
+            navigate("/home", { replace: true });
 
         } catch (error) {
             setMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -68,6 +80,7 @@ function Login() {
     const handleRegister = async (e) => {
         e.preventDefault();
         setMessage("");
+        setLoading(true);
 
         try {
             const result = await callAPI("register", {
@@ -76,16 +89,17 @@ function Login() {
                 password: password
             });
 
-            setMessage(result.message);
+            setMessage(result.message || "Registration successful. Please login.");
 
             setLoginId("");
             setEmail("");
             setPassword("");
-
             setPage("login");
 
         } catch (error) {
             setMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -93,16 +107,19 @@ function Login() {
     const handleForgot = async (e) => {
         e.preventDefault();
         setMessage("");
+        setLoading(true);
 
         try {
             const result = await callAPI("forgot-password", {
                 login_id: loginId
             });
 
-            setMessage(result.message);
+            setMessage(result.message || "Password reset instructions sent.");
 
         } catch (error) {
             setMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -110,6 +127,7 @@ function Login() {
     const handleReset = async (e) => {
         e.preventDefault();
         setMessage("");
+        setLoading(true);
 
         const token = new URLSearchParams(
             window.location.search
@@ -121,7 +139,7 @@ function Login() {
                 new_password: newPassword
             });
 
-            setMessage(result.message);
+            setMessage(result.message || "Password updated successfully.");
             setNewPassword("");
 
             window.history.replaceState(
@@ -134,12 +152,13 @@ function Login() {
 
         } catch (error) {
             setMessage(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="login-container">
-
             <div className="login-box">
 
                 <h2>
@@ -161,7 +180,6 @@ function Login() {
                 )}
 
                 {/* LOGIN FORM */}
-
                 {page === "login" && (
                     <form onSubmit={handleLogin}>
 
@@ -174,7 +192,6 @@ function Login() {
                         />
 
                         <div className="password-field">
-
                             <input
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Password"
@@ -189,7 +206,6 @@ function Login() {
                             >
                                 {showPassword ? "🙈" : "👁"}
                             </span>
-
                         </div>
 
                         <div className="forgot-link">
@@ -201,8 +217,8 @@ function Login() {
                             </span>
                         </div>
 
-                        <button type="submit">
-                            Login
+                        <button type="submit" disabled={loading}>
+                            {loading ? "Logging in..." : "Login"}
                         </button>
 
                         <p>
@@ -219,7 +235,6 @@ function Login() {
                 )}
 
                 {/* REGISTER FORM */}
-
                 {page === "register" && (
                     <form onSubmit={handleRegister}>
 
@@ -248,8 +263,8 @@ function Login() {
                             required
                         />
 
-                        <button type="submit">
-                            Register
+                        <button type="submit" disabled={loading}>
+                            {loading ? "Registering..." : "Register"}
                         </button>
 
                         <p>
@@ -266,7 +281,6 @@ function Login() {
                 )}
 
                 {/* FORGOT PASSWORD FORM */}
-
                 {page === "forgot" && (
                     <form onSubmit={handleForgot}>
 
@@ -278,8 +292,8 @@ function Login() {
                             required
                         />
 
-                        <button type="submit">
-                            Send Reset Link
+                        <button type="submit" disabled={loading}>
+                            {loading ? "Sending..." : "Send Reset Link"}
                         </button>
 
                         <p>
@@ -295,7 +309,6 @@ function Login() {
                 )}
 
                 {/* RESET PASSWORD FORM */}
-
                 {page === "reset" && (
                     <form onSubmit={handleReset}>
 
@@ -308,8 +321,8 @@ function Login() {
                             required
                         />
 
-                        <button type="submit">
-                            Update Password
+                        <button type="submit" disabled={loading}>
+                            {loading ? "Updating..." : "Update Password"}
                         </button>
 
                         <p>
