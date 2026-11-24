@@ -1,28 +1,28 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Login from "./components/Login";
-import Home from "./components/Home";
-import "./App.css";
+
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Navigate
+} from "react-router-dom";
+
+import Login from "./Login";
+import Chatbot from "./Chatbot";
 
 function App() {
-  const token = localStorage.getItem("token");
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />} />
 
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          token ? <Navigate to="/home" /> : <Login />
-        }
-      />
+                <Route path="/index.html" element={<Login />} />
 
-      <Route
-        path="/home"
-        element={
-          token ? <Home /> : <Navigate to="/" />
-        }
-      />
-    </Routes>
-  );
+                <Route path="/home" element={<Chatbot />} />
+
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
