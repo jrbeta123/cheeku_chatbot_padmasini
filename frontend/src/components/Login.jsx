@@ -18,27 +18,29 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState("");
 
+    // Common API function
     const callAPI = async (endpoint, data) => {
-        try {
-            const response = await fetch(`${API}/${endpoint}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || "Something went wrong");
-            }
-
-            return result;
-
-        } catch (error) {
-            throw error;
+        if (!API) {
+            throw new Error("Backend API URL is missing. Check your .env file.");
         }
+
+        const response = await fetch(`${API}/${endpoint}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || result.message || "Something went wrong"
+            );
+        }
+
+        return result;
     };
 
     // LOGIN
@@ -55,7 +57,6 @@ function Login() {
 
             setMessage("Login successful!");
 
-            // Redirect to chatbot after login
             window.location.href = "/home";
 
         } catch (error) {
@@ -157,7 +158,6 @@ function Login() {
                 )}
 
                 {/* LOGIN FORM */}
-
                 {page === "login" && (
                     <form onSubmit={handleLogin}>
 
@@ -211,7 +211,6 @@ function Login() {
                 )}
 
                 {/* REGISTER FORM */}
-
                 {page === "register" && (
                     <form onSubmit={handleRegister}>
 
@@ -256,7 +255,6 @@ function Login() {
                 )}
 
                 {/* FORGOT PASSWORD FORM */}
-
                 {page === "forgot" && (
                     <form onSubmit={handleForgot}>
 
@@ -285,7 +283,6 @@ function Login() {
                 )}
 
                 {/* RESET PASSWORD FORM */}
-
                 {page === "reset" && (
                     <form onSubmit={handleReset}>
 
