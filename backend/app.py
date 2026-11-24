@@ -18,18 +18,19 @@ app = Flask(__name__)
 # ---------------------------------------------------------------------------
 # CORS: allow only your frontend link(s)
 # ---------------------------------------------------------------------------
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")  # no trailing slash
+FRONTEND_URLS = os.getenv("FRONTEND_URLS", "").split(",")
 
 CORS(
     app,
-    resources={r"/*": {"origins": [
-        FRONTEND_URL,              # e.g. https://my-chatbot.vercel.app
-        "http://localhost:3000",   # local React dev
-        "http://localhost:5173",
-        "https://cheeku-chatbot-padmasini-1.onrender.com",
-    
-           # local Vite dev
-    ]}},
+    resources={
+        r"/*": {
+            "origins": [
+                url.strip()
+                for url in FRONTEND_URLS
+                if url.strip()
+            ]
+        }
+    },
     methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
 )
