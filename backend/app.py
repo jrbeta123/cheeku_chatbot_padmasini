@@ -25,7 +25,9 @@ CORS(
     resources={r"/*": {"origins": [
         FRONTEND_URL,              # e.g. https://my-chatbot.vercel.app
         "http://localhost:3000",   # local React dev
-        "http://localhost:5173",   # local Vite dev
+        "http://localhost:5173",
+    
+           # local Vite dev
     ]}},
     methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
