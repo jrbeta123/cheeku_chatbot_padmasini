@@ -19,7 +19,7 @@ app = Flask(__name__)
 # CORS CONFIGURATION
 # --------------------------------------------------
 
-FRONTEND_URL = "https://cheeku-chatbot-padmasini-1.onrender.com"
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 CORS(
     app,
