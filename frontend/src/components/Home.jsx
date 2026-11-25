@@ -1,7 +1,7 @@
 import Header from "../navigation/Header";
 import Footer from "../navigation/Footer";
 import Chatbot from "./Chatbot";
-import "./Home.css";
+import "./Home.css";git
 
 function Home() {
   return (
